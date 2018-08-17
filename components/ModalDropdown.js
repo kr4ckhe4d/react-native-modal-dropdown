@@ -1,5 +1,6 @@
 /**
  * Created by sohobloo on 16/9/13.
+ * Modified by Nipuna H Herath on 17/08/18
  */
 
 'use strict';
@@ -225,7 +226,7 @@ export default class ModalDropdown extends Component {
   }
 
   _calcPosition() {
-    const {dropdownStyle, style, adjustFrame} = this.props;
+    const {dropdownStyle, bottomOnly=false, options=[], style, adjustFrame} = this.props;
 
     const dimensions = Dimensions.get('window');
     const windowWidth = dimensions.width;
@@ -234,15 +235,20 @@ export default class ModalDropdown extends Component {
     const dropdownHeight = (dropdownStyle && StyleSheet.flatten(dropdownStyle).height) ||
       StyleSheet.flatten(styles.dropdown).height;
 
+    let dropDownHeightAuto = dropdownHeight == 'auto' ? (45 * options.length) - 45 : dropdownHeight
+
     const bottomSpace = windowHeight - this._buttonFrame.y - this._buttonFrame.h;
     const rightSpace = windowWidth - this._buttonFrame.x;
-    const showInBottom = bottomSpace >= dropdownHeight || bottomSpace >= this._buttonFrame.y;
+    const showInBottom = bottomSpace >= dropDownHeightAuto || bottomSpace >= this._buttonFrame.y;
     const showInLeft = rightSpace >= this._buttonFrame.x;
 
     const positionStyle = {
       height: dropdownHeight,
-      top: showInBottom ? this._buttonFrame.y + this._buttonFrame.h : Math.max(0, this._buttonFrame.y - dropdownHeight),
+      top: showInBottom ? this._buttonFrame.y + this._buttonFrame.h : Math.max(0, this._buttonFrame.y - dropDownHeightAuto),
     };
+
+    console.log("dropdownHeight: ", dropdownHeight);
+    console.log("dropDownHeightAuto: ", dropDownHeightAuto);
 
     if (showInLeft) {
       positionStyle.left = this._buttonFrame.x;
